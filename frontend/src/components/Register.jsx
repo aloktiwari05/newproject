@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { apiUrl } from '../config.js';
 
 function Register() {
 
-  const apiUrl = import.meta.env.VITE_API_URL
   const [form, setForm] = useState({ username: '', email: '', password: '' })
 
   const handleSubmit = async (e) => {
@@ -23,10 +23,6 @@ function Register() {
       console.log(err)
     }
   }
-
-  useEffect(() => {
-    console.log(form)
-  }, [form])
 
   return (
     <div>
