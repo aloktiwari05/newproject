@@ -13,11 +13,19 @@ app.use(express.json())
 app.use(cors())
 app.use('/',userRoutes)
 
-
 app.get('/', (req,res) => {
     res.json({message: "Hello Developer"})
 })
 
-app.listen(port, (req,res)=>{
+const startServer = () =>{
+    try{
+    app.listen(port, (req,res)=>{
     console.log(`Server listening on http://localhost:${port}`)
 })
+
+}catch(err){
+    console.log(err)
+}}
+
+
+startServer();
