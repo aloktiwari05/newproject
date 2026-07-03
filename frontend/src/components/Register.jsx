@@ -14,7 +14,9 @@ function Register() {
         headers:{
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...form })
+        body: JSON.stringify({ ...form }),
+
+        credentials: 'include'
       })
       const result = await response.json()
       console.log(result)

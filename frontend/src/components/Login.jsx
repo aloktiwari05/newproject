@@ -3,7 +3,7 @@ import { apiUrl } from '../config.js'
 
 function Login() {
 
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({ identifier: '', password: '' })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -32,11 +32,8 @@ function Login() {
       <h1 className="text-center">Login</h1>
 
       <form method='POST' onSubmit={handleSubmit} className="flex flex-col items-center gap-2">
-        <label htmlFor='name'>Name :</label>
-        <input type='text' id='name' placeholder='Username' className="border px-4 py-2 rounded-xl " onChange={(e) => { setForm((f) => ({ ...f, name: e.target.value })) }} />
-
-        <label htmlFor='email'>Email :</label>
-        <input type='email' id='email' placeholder='Email' className="border px-4 py-2 rounded-xl " onChange={(e) => { setForm((f) => ({ ...f, email: e.target.value })) }} />
+        <label htmlFor='identifier'>Email or Username :</label>
+        <input type='text' id='identifier' placeholder='Email or Username' className="border px-4 py-2 rounded-xl " onChange={(e) => { setForm((f) => ({ ...f, identifier: e.target.value })) }} />
 
         <label htmlFor='password'>Password :</label>
         <input type='password' id='password' placeholder='Password' autoComplete='current_password' className="border px-4 py-2 rounded-xl " onChange={(e) => { setForm((f) => ({ ...f, password: e.target.value })) }} />
