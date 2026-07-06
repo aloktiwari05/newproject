@@ -4,18 +4,21 @@ import './index.css'
 import App from './App.jsx'
 import Login from './components/Login.jsx'
 import Register from './components/Register.jsx'
-import {createBrowserRouter, createRoutesFromElements, RouterProvider, Route} from 'react-router-dom'
+import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
+import { AuthProvider } from './context/authContext.jsx'
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route>
-    <Route path='/login' element={<Login/>}/>
-    <Route path='/register' element={<Register/>}/>
-    <Route path='/' element={<App/>}/>
+    <Route path='/login' element={<Login />} />
+    <Route path='/register' element={<Register />} />
+    <Route path='/' element={<App />} />
   </Route>
 ))
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 )

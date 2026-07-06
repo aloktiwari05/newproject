@@ -1,22 +1,34 @@
 import cookie from 'cookie-parser'
 import jwt from 'jsonwebtoken'
+import db from '../config/db.js'
 
-export const generateAccessToken = (id) => {
+const generateAccessToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '15min' })
 }
 
-export const generateRefreshToken = (id) => {
+const generateRefreshToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' })
 }
 
-export const verifyToken = (token) => {
-
+const saveRefreshToken = async (userId, token) => {
+        await db.query('UPDATE users SET refresh_token = ($1) WHERE id = ($2)', [token, userId])
 }
 
-export const setRefreshtTokenCookie = (res, refreshToken) => {
+// export const verifyToken = (token) => {
+
+// }
+
+const setRefreshTokenCookie = (res, refreshToken) => {
     return res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "Strict",
     })
+}
+
+export {
+    generateAccessToken,
+    generateRefreshToken,
+    saveRefreshToken,
+    setRefreshTokenCookie,
 }
