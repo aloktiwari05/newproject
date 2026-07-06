@@ -18,8 +18,8 @@ function Register() {
 
         credentials: 'include'
       })
-      const result = await response.json()
-      console.log(result)
+      const {message , user, accessToken} = await response.json()
+      console.log(message, user, accessToken )
     }
     catch (err) {
       console.log(err)
