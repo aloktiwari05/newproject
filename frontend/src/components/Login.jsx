@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { apiUrl } from '../config.js'
+import { useAuth } from '../context/authContext.jsx'
 
 function Login() {
 
+  const {setAccessToken, setUser} = useAuth()
   const [form, setForm] = useState({ identifier: '', password: '' })
 
   const handleSubmit = async (e) => {
@@ -15,8 +17,11 @@ function Login() {
         },
         body: JSON.stringify({ ...form })
       })
-      const result = await response.json();
-      console.log(result)
+      const {message, user, accessToken} = await response.json();
+      console.log(message, user, accessToken)
+
+      setAccessToken(accessToken)
+      setUser(user)
     }
     catch (err) {
       console.log(err)

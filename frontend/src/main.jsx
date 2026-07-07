@@ -4,14 +4,19 @@ import './index.css'
 import App from './App.jsx'
 import Login from './components/Login.jsx'
 import Register from './components/Register.jsx'
-import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
+import Home from './components/Home.jsx'
+import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route, } from 'react-router-dom'
 import { AuthProvider } from './context/authContext.jsx'
+import ProtectedRoutes from './routes/ProtectedRoutes.jsx'
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route>
+    <Route element={<ProtectedRoutes />}>
+      <Route path='/' element={<App />} />
+      <Route path='/home' element={<Home />} />
+    </Route>
     <Route path='/login' element={<Login />} />
     <Route path='/register' element={<Register />} />
-    <Route path='/' element={<App />} />
   </Route>
 ))
 
