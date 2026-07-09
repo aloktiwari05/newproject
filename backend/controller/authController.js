@@ -80,7 +80,28 @@ const signup = async (req, res) => {
     }
 }
 
+const refresh = async (req, res) => {
+    const accessToken = req.body
+}
+
+const getUser = async (req, res) => {
+    const userId = req.body.userId;
+    try{
+        const result = await db.query('SELECT username, email FROM users WHERE id = ($1)', [userId])
+        if(!result){
+            return res.stauts(404).json({message: 'User Not found !'})
+        }
+        res.status(201).json({user: result.rows[0]})
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({message: err.message})
+    }
+}
+
 export {
     login,
     signup,
+    refresh,
+    getUser,
 }

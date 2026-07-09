@@ -3,11 +3,11 @@ import jwt from 'jsonwebtoken'
 import db from '../config/db.js'
 
 const generateAccessToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '15min' })
+    return jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, { expiresIn: '2min' })
 }
 
 const generateRefreshToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' })
+    return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' })
 }
 
 const saveRefreshToken = async (userId, token) => {
