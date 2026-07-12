@@ -3,7 +3,11 @@ import {useAuth} from '../context/authContext.jsx'
 
 function ProtectedRoutes() {
 
-    const {accessToken} = useAuth()
+    const {accessToken, isLoading} = useAuth()
+
+        if(isLoading){
+            return <div>Authenticating User !</div>
+        }
         return (!accessToken) ? <Navigate to='/login' replace /> : <Outlet />
 }
 

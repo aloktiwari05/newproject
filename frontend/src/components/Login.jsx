@@ -18,18 +18,15 @@ function Login() {
         body: JSON.stringify({ ...form })
       })
       const {message, user, accessToken} = await response.json();
-      console.log(message, user, accessToken)
-
       setAccessToken(accessToken)
       setUser(user)
+      console.log(message)
     }
     catch (err) {
       console.log(err)
     }
   }
-
   console.log(form)
-
 
   return (
     <div className="border w-full p-10 max-w-xl">
