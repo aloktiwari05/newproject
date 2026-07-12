@@ -1,5 +1,6 @@
 import db from '../config/db.js'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import { generateAccessToken, generateRefreshToken, saveRefreshToken, setRefreshTokenCookie } from '../utils/authUtils.js'
 
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS)
@@ -25,9 +26,9 @@ const login = async (req, res) => {
         else {
             const accessToken = generateAccessToken(id)
             const refreshToken = generateRefreshToken(id)
-            await saveRefreshToken(id, refreshToken)
+            const response = await saveRefreshToken(id, refreshToken)
             setRefreshTokenCookie(res, refreshToken)
-            return res.status(201).json({ message: 'User Logged In Successfully', user: {id, username, email}, accessToken })
+            return res.status(201).json({ message: 'User Logged In Successfully', user: { id, username, email }, accessToken })
         }
     }
     catch (err) {
@@ -52,11 +53,12 @@ const signup = async (req, res) => {
     try {
         const hash = await bcrypt.hash(formData.password, saltRounds)
 
-        const response = await db.query('INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)  RETURNING id, username, email', [formData.username, formData.email, hash])
+        const result = await db.query('INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)  RETURNING id, username, email', [formData.username, formData.email, hash])
 
-        const accessToken = generateAccessToken(response.rows[0].id)
-        const refreshToken = generateRefreshToken(response.rows[0].id)
-        await saveRefreshToken(response.rows[0].id, refreshToken)
+        const accessToken = generateAccessToken(result.rows[0].id)
+        const refreshToken = generateRefreshToken(result.rows[0].id)
+        const response = await saveRefreshToken(result.rows[0].id, refreshToken)
+
         setRefreshTokenCookie(res, refreshToken)
 
         res.status(201).json({ message: 'User Created Successfully', user: response.rows[0], accessToken })
@@ -81,21 +83,54 @@ const signup = async (req, res) => {
 }
 
 const refresh = async (req, res) => {
-    const accessToken = req.body
+    try {
+        const refreshToken = req.cookies?.refreshToken
+
+        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+        const data = await db.query('SELECT id, username, email, refresh_token FROM users WHERE id = $1', [decoded.id])
+        if (data.rows.length === 0) {
+            return res.status(404).json({ message: 'Invalid access attempt' })
+        }
+
+        const { id, username, email, refresh_token } = data.rows[0]
+
+        if (refresh_token !== refreshToken) {
+            return res.status(401).json({ message: 'Invalid credentials ! Kindly Login again' })
+        }
+
+        const accessToken = generateAccessToken(id)
+        const newRefreshToken = generateRefreshToken(id)
+        await saveRefreshToken(id, newRefreshToken)
+
+        setRefreshTokenCookie(res, newRefreshToken)
+        return res.status(200).json({ message: 'success !', user: { id, username, email }, accessToken })
+
+    } catch (err) {
+
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Refresh token expired. Please Login again !' })
+        }
+        if(err.name === 'JsonWebTokenError'){
+            return res.status(401).json({message: 'Invalid refresh token !'})
+        }
+        res.status(500).json({ message: 'Internal Server Error !' })
+    }
+
 }
 
 const getUser = async (req, res) => {
     const userId = req.body.userId;
-    try{
+    try {
         const result = await db.query('SELECT username, email FROM users WHERE id = ($1)', [userId])
-        if(!result){
-            return res.stauts(404).json({message: 'User Not found !'})
+        if (!result) {
+            return res.stauts(404).json({ message: 'User Not found !' })
         }
-        res.status(201).json({user: result.rows[0]})
+        res.status(201).json({ user: result.rows[0] })
     }
-    catch(err){
+    catch (err) {
         console.log(err)
-        res.status(500).json({message: err.message})
+        res.status(500).json({ message: err.message })
     }
 }
 

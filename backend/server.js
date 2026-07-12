@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import userRoutes from './routes/authRoutes.js'
+import authRoutes from './routes/authRoutes.js'
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -11,7 +12,8 @@ const corsOption = {origin: process.env.ORIGIN, credentials: true,}
 
 app.use(express.json())
 app.use(cors(corsOption))
-app.use('/api/',userRoutes)
+app.use(cookieParser())
+app.use('/api/',authRoutes)
 
 app.get('/', (req,res) => {
     res.json({message: "Hello Developer"})
