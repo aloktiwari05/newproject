@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { apiUrl } from '../config.js';
+import { apiUrl } from '../api/api.js';
 import {useAuth} from '../context/authContext.jsx'
 
 function Register() {
 
-  const {setAccessToken, setUser} = useAuth()
+  const {setAccessToken} = useAuth()
   const [form, setForm] = useState({ username: '', email: '', password: '' })
 
   const handleSubmit = async (e) => {
@@ -22,7 +22,6 @@ function Register() {
       })
       const {message , user, accessToken} = await response.json()
       setAccessToken(accessToken)
-      setUser({...user})
       console.log(message, user, accessToken )
     }
     catch (err) {
