@@ -1,41 +1,18 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { apiUrl } from '../config.js'
+import { refresh } from '../api/api.js'
 
 const AuthContext = createContext()
 
 const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null)
-    const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-
-        const verfiyRefreshToken = async () => {
-
-            try {
-                const result = await fetch(`${apiUrl}/api/refresh`, { credentials: 'include' })
-
-                if (result.ok) {
-                    const data = await result.json()
-                    setAccessToken(data.accessToken)
-                }
-            } 
-            catch (err) {
-
-                console.log(err.message)
-
-            } finally {
-
-                setIsLoading(false)
-                
-            }
-        }
-
-        verfiyRefreshToken();
+        refresh(setAccessToken, setIsLoading);
     }, [])
 
     return (
-        <AuthContext.Provider value={{ accessToken, setAccessToken, user, setUser, isLoading }}>
+        <AuthContext.Provider value={{ accessToken, setAccessToken, isLoading, setIsLoading }}>
             {children}
         </AuthContext.Provider>
     )

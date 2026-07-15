@@ -15,15 +15,11 @@ const saveRefreshToken = async (userId, token) => {
         return response.rows[0]
 }
 
-// export const verifyToken = (token) => {
-
-// }
-
 const setRefreshTokenCookie = (res, refreshToken) => {
-    return res.cookie('refresh_token',refreshToken, {
+    return res.cookie('refreshToken',refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: "lax",
     })
 }
 

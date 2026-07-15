@@ -1,5 +1,4 @@
 // import React from 'react'
-
 import { useNavigate } from "react-router-dom"
 
 function Home() {
@@ -8,7 +7,7 @@ function Home() {
   return (
     <div>
       <h1>Home</h1>
-      <button  onClick={navigate('/profile')}>View Profile</button>
+      <button  onClick={() => navigate('/profile')}>View Profile</button>
     </div>
   )
 }
