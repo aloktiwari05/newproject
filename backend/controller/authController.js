@@ -86,6 +86,12 @@ const refresh = async (req, res) => {
     try {
         const refreshToken = req.cookies?.refreshToken
 
+        if (!refreshToken) {
+            return res.status(401).json({
+                message: "Refresh token missing",
+            });
+        }
+
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
 
         const data = await db.query('SELECT id, username, email, refresh_token FROM users WHERE id = $1', [decoded.id])
@@ -108,11 +114,17 @@ const refresh = async (req, res) => {
 
     } catch (err) {
 
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: true,
+        });
+
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({ message: 'Refresh token expired. Please Login again !' })
         }
-        if(err.name === 'JsonWebTokenError'){
-            return res.status(401).json({message: 'Invalid refresh token !'})
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid refresh token !' })
         }
         res.status(500).json({ message: 'Internal Server Error !' })
     }
