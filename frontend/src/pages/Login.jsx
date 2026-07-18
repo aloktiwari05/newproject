@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { apiUrl } from '../api/api.js'
 import { useAuth } from '../context/authContext.jsx'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
 
   const {setAccessToken} = useAuth()
   const [form, setForm] = useState({ identifier: '', password: '' })
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -20,6 +22,7 @@ function Login() {
       })
       const {message, accessToken} = await response.json();
       setAccessToken(accessToken)
+      navigate('/home')
 
       console.log(message)
     }
