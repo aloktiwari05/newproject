@@ -1,33 +1,15 @@
 // import React from 'react'
-import {useAuth} from '../context/authContext.jsx'
-import { apiUrl, refresh } from '../api/api.js'
+// import {useAuth} from '../context/authContext.jsx'
+import Logout from '../components/Logout.jsx'
 
 function Profile() {
 
-  const { accessToken, setAccessToken, setIsLoading } = useAuth()
-
-  try {
-    const fetchUser = async () => {
-      const result = await fetch(`${apiUrl}/api/getUser`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        },
-        credentials: 'include'
-      })
-
-      const response = await result.json();
-      if (response.message === 'TokenExpiredError') {
-        refresh(setAccessToken, setIsLoading)
-      }
-    }
-    fetchUser()
-  } catch (err) {
-    console.log(err)
-  }
-
+  // const { accessToken, setAccessToken, setIsLoading } = useAuth()
 
   return (
-    <div>Profile</div>
+    <div>
+      <Logout/>
+    </div>
   )
 }
 

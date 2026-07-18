@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { refresh } from '../api/api.js'
+import { refreshService, logoutService } from '../services/service.auth.js'
 
 const AuthContext = createContext()
 
@@ -7,13 +7,22 @@ const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [user, setUser] = useState(null)
+    
+    const logout = async () => {
+        setAccessToken(null)
+        setUser(null)
+        const response = await logoutService()
+        console.log(response)
+
+    }
+
 
     useEffect(() => {
-        refresh(setAccessToken, setIsLoading, setUser );
+        refreshService(setAccessToken, setIsLoading, setUser );
     }, [])
 
     return (
-        <AuthContext.Provider value={{ accessToken, setAccessToken, isLoading, setIsLoading, user, setUser }}>
+        <AuthContext.Provider value={{ accessToken, setAccessToken, isLoading, setIsLoading, user, setUser, logout }}>
             {children}
         </AuthContext.Provider>
     )
