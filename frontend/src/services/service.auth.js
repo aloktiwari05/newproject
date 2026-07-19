@@ -28,7 +28,7 @@ const refreshService = async (setAccessToken, setIsLoading, setUser) => {
 
 const logoutService = async () => {
     try {
-        const response = await fetch(`${apiUrl}/api/logout`, { credentials: 'include'})
+        const response = await fetch(`${apiUrl}/api/logout`, { method: 'POST', credentials: 'include'})
         const result = await response.json()
         return result
     }
