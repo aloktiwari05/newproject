@@ -14,9 +14,10 @@ import ProtectedRoutes from './routes/ProtectedRoutes.jsx'
 const router = createBrowserRouter(createRoutesFromElements(
   <Route>
     <Route element={<ProtectedRoutes />}>
-      <Route path='/' element={<App />} />
-      <Route path='/home' element={<Home />} />
-      <Route path='/profile' element={<Profile/>}/>
+      <Route path='/' element={<App />}>
+        <Route path='/home' element={<Home />} />
+        <Route path='/profile' element={<Profile />} />
+      </Route>
     </Route>
     <Route path='/login' element={<Login />} />
     <Route path='/register' element={<Register />} />
@@ -25,9 +26,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 ))
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  </StrictMode>,
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>,
 )
