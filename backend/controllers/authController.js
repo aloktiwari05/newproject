@@ -25,8 +25,10 @@ const login = async (req, res) => {
         }
         else {
             const accessToken = generateAccessToken(id)
+            console.log(accessToken)
             const refreshToken = generateRefreshToken(id)
             const response = await saveRefreshToken(id, refreshToken)
+            console.log('stored token : ', refreshToken)
             setRefreshTokenCookie(res, refreshToken)
             return res.status(201).json({ message: 'User Logged In Successfully', user: { id, username, email }, accessToken })
         }
@@ -56,7 +58,11 @@ const signup = async (req, res) => {
         const result = await db.query('INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)  RETURNING id, username, email', [formData.username, formData.email, hash])
 
         const accessToken = generateAccessToken(result.rows[0].id)
+        console.log('access token : ', accessToken)
+        console.log('user : ', result.rows[0])
         const refreshToken = generateRefreshToken(result.rows[0].id)
+        console.log('access token : ', accessToken)
+
         const response = await saveRefreshToken(result.rows[0].id, refreshToken)
 
         setRefreshTokenCookie(res, refreshToken)
@@ -85,6 +91,7 @@ const signup = async (req, res) => {
 const refresh = async (req, res) => {
     try {
         const refreshToken = req.cookies?.refreshToken
+        console.log(refreshToken)
 
         if (!refreshToken) {
             return res.status(401).json({
@@ -102,10 +109,12 @@ const refresh = async (req, res) => {
         const { id, username, email, refresh_token } = data.rows[0]
 
         if (refresh_token !== refreshToken) {
+            // console.log('refresh token: ',refreshToken, 'db token: ', refresh_token)
             return res.status(401).json({ message: 'Invalid credentials ! Kindly Login again' })
         }
 
         const accessToken = generateAccessToken(id)
+        console.log('accessToken :', accessToken)
         const newRefreshToken = generateRefreshToken(id)
         await saveRefreshToken(id, newRefreshToken)
 
@@ -151,7 +160,6 @@ const logout = async (req, res) => {
 
     try {
         const refreshToken = req.cookies?.refreshToken
-        console.log(refreshToken)
 
         if (!refreshToken) {
             return res.status(401).json({ message: 'Invalid unauthorized attempt !' })
