@@ -13,7 +13,6 @@ CREATE TABLE tasks (
     task_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    completed BOOLEAN DEFAULT FALSE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     priority VARCHAR(10) DEFAULT 'medium'
         CHECK (priority IN ('low', 'medium', 'high')),
