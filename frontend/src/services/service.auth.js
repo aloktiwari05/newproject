@@ -1,4 +1,5 @@
 import {apiUrl} from '../api/api.js'
+import { toast } from 'react-toastify'
 
 const refreshService = async (setAccessToken, setIsLoading, setUser) => {
 
@@ -9,6 +10,7 @@ const refreshService = async (setAccessToken, setIsLoading, setUser) => {
 
         if (!result.ok) {
             setAccessToken(null);
+            toast.error(data.message)
             console.log(data.message);
             return;
         }

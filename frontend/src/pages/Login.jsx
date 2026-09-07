@@ -56,6 +56,7 @@ function Login() {
           type="text"
           id="identifier"
           placeholder="Enter your email or username"
+          autoComplete='username'
           value={form.identifier}
           onChange={(e) =>
             setForm((f) => ({
