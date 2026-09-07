@@ -1,4 +1,5 @@
 import { apiUrl } from "../api/api.js";
+import { toast } from 'react-toastify'
 
 const createTaskService = async (taskDraft, token) => {
     try {
@@ -18,9 +19,12 @@ const createTaskService = async (taskDraft, token) => {
         }
 
         console.log("Task created successfully:", result);
+
+        toast.success(result.message)
+
         return result.data;
     } catch (err) {
-        console.log("Error creating task:", err);
+        toast.error(err)
     }
 };
 
@@ -39,13 +43,13 @@ const fetchTasksService = async (token, setAllTasks) => {
         setAllTasks([...fetchedTasks])
     }
     catch (err) {
+        toast.error(err.message)
         console.log(err)
     }
 }
 
 const updateTaskService = async (token, task_id, task) => {
 
-    console.log(task)
     try {
         const response = await fetch(`${apiUrl}/api/tasks/update/${task_id}`,
             {
@@ -58,12 +62,14 @@ const updateTaskService = async (token, task_id, task) => {
             })
 
         const result = await response.json()
+        toast.success(result.message)
 
         if (response.ok){
             return result
         }
     }
     catch (err) {
+        toast.error(err.message)
         console.log(err)
     }
 }
@@ -77,13 +83,15 @@ const deleteTaskService = async (token, task_id) => {
             }
         })
         const result = await response.json()
+        toast.success(result.message)
 
         if (!response.ok) {
+            toast.error(result.message)
             throw new Error(result.message || "Failed to delete the task");
         }
-        console.log(result)
     }
     catch (err) {
+        toast.error(err.message)
         console.log(err)
     }
 }

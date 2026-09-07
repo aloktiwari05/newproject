@@ -8,8 +8,8 @@ const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS)
 // Login POST route
 
 const login = async (req, res) => {
+    
     const formData = req.body;
-
     try {
         const result = await db.query('SELECT id, email, username, password_hash FROM users WHERE email = ($1) or username = ($1)', [formData.identifier])
 
@@ -25,10 +25,8 @@ const login = async (req, res) => {
         }
         else {
             const accessToken = generateAccessToken(id)
-            console.log(accessToken)
             const refreshToken = generateRefreshToken(id)
             const response = await saveRefreshToken(id, refreshToken)
-            console.log('stored token : ', refreshToken)
             setRefreshTokenCookie(res, refreshToken)
             return res.status(201).json({ message: 'User Logged In Successfully', user: { id, username, email }, accessToken })
         }
@@ -50,7 +48,7 @@ const signup = async (req, res) => {
     const formData = req.body;
 
     if (formData.password.length < 8) {
-        return res.status(400).json({ error: "Password should be minimum of 8 characters" })
+        return res.status(400).json({ message: "Password should be minimum of 8 characters" })
     }
     try {
         const hash = await bcrypt.hash(formData.password, saltRounds)
@@ -75,11 +73,11 @@ const signup = async (req, res) => {
         if (err.code == '23505') {
 
             if (err.constraint == 'users_username_key') {
-                return res.status(409).json({ error: 'Username already exists !' })
+                return res.status(409).json({ message: 'Username already exists !' })
             }
 
             if (err.constraint == 'users_email_key') {
-                return res.status(409).json({ error: 'Email already exists !' })
+                return res.status(409).json({ message: 'Email already exists !' })
             }
 
         }
@@ -144,7 +142,7 @@ const getUser = async (req, res) => {
     try {
         const result = await db.query('SELECT username, email FROM users WHERE id = ($1)', [userId])
         if (!result) {
-            return res.stauts(404).json({ message: 'User Not found !' })
+            return res.status(404).json({ message: 'User Not found !' })
         }
         res.status(201).json({ user: result.rows[0] })
     }

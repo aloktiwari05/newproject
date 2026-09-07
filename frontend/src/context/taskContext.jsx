@@ -1,6 +1,7 @@
 import { useState, createContext, useContext, useEffect } from "react";
 import { fetchTasksService, createTaskService, deleteTaskService, updateTaskService } from '../services/service.tasks.js'
 import { useAuth } from '../context/authContext.jsx'
+// import { toast } from 'react-toastify'
 
 const TaskContext = createContext()
 const TaskProvider = ({ children }) => {
@@ -33,7 +34,6 @@ const TaskProvider = ({ children }) => {
         try {
             const result = await updateTaskService(accessToken, taskID, task)
             const data = result.data
-            // console.log(data)
             setAllTasks(prev =>prev.map( task => ( task.task_id === data.task_id ? {...prev, ...data} : task)) )
 
         }
